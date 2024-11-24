@@ -49,7 +49,7 @@ It's also possible to manually generate the files either via a button in the Pro
 ```c#
 public sealed class Bullet : MonoBehaviour
 {
-    private void OnCollisionEnter([Collision other)
+    private void OnCollisionEnter(Collision other)
     {
         // Used in CampareTag.
         if (other.gameObject.CompareTag(Tag.Player)) {
@@ -109,7 +109,7 @@ public class ExampleClass : MonoBehaviour
     // Unity already provides an inspecor for the UnityEngine.LayerMask struct.
     public LayerMask layerMask;
 
-    private void OnCollisionEnter([Collision other)
+    private void OnCollisionEnter(Collision other)
     {
         // You can safely use the tag in CampareTag checks.
         if (other.gameObject.CompareTag(tag)) {
