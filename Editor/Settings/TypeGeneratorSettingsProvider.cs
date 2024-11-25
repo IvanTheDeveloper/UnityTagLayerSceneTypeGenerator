@@ -35,6 +35,7 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
         {
             PropertiesGUI(nameof(TypeGeneratorSettings.Tag));
             PropertiesGUI(nameof(TypeGeneratorSettings.Layer));
+            PropertiesGUI(nameof(TypeGeneratorSettings.Scene));
 
             EditorGUILayout.LabelField("Actions", EditorStyles.boldLabel);
 
@@ -44,6 +45,10 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
 
             EditorGUI.BeginDisabledGroup(!LayerTypeGenerator.Generator.CanGenerate());
             if (GUILayout.Button("Regenerate Layer Type File")) LayerTypeGenerator.Generator.GenerateFile();
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(!SceneTypeGenerator.Generator.CanGenerate());
+            if (GUILayout.Button("Regenerate Scene Type File")) SceneTypeGenerator.Generator.GenerateFile();
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.LabelField("Open", EditorStyles.boldLabel);
@@ -70,7 +75,7 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
         [SettingsProvider]
         [NotNull]
         private static SettingsProvider CreateTagClassGeneratorSettingsProvider() => new TypeGeneratorSettingsProvider(ProjectSettingPath, SettingsScope.Project)
-            {keywords = GetSearchKeywordsFromGUIContentProperties<Styles>()};
+        { keywords = GetSearchKeywordsFromGUIContentProperties<Styles>() };
 
         /// <summary>Styles for the <see cref="SettingsProvider" />.</summary>
         private /*readonly*/ struct Styles

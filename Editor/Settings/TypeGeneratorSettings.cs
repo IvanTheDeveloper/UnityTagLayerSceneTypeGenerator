@@ -8,7 +8,7 @@ using static System.String;
 
 namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
 {
-    /// <summary>Settings for <see cref="TagTypeGenerator" />.</summary>
+    /// <summary>Settings for <see cref="SceneTypeGenerator" />.</summary>
     public sealed class TypeGeneratorSettings : ScriptableObject
     {
         /// <summary>Where to create a new <see cref="TypeGeneratorSettings" /> asset.</summary>
@@ -20,10 +20,14 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
         /// <summary>Settings for Layers.</summary>
         [SerializeField] internal Settings Layer;
 
+        /// <summary>Settings for Scenes.</summary>
+        [SerializeField] internal Settings Scene;
+
         /// <summary>Returns <see cref="InvalidOperationException" /> or creates a new one and saves the asset.</summary>
         /// <value>The <see cref="TypeGeneratorSettings" /> to use.</value>
         /// <exception cref="TypeGeneratorSettings">More than one <see cref="TypeGeneratorSettings" /> are in the project.</exception>
-        [NotNull] internal static TypeGeneratorSettings GetOrCreateSettings
+        [NotNull]
+        internal static TypeGeneratorSettings GetOrCreateSettings
         {
             get
             {
@@ -53,6 +57,7 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
         {
             Tag = TypeGeneratorSettingsDefaults.Tag;
             Layer = TypeGeneratorSettingsDefaults.Layer;
+            Scene = TypeGeneratorSettingsDefaults.Scene;
         }
 
         /// <summary>This function is called when the script is loaded or a value is changed in the Inspector (Called in the editor only).</summary>
@@ -60,6 +65,7 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
         {
             TypeGeneratorSettingsValidator.ValidateAll(Tag);
             TypeGeneratorSettingsValidator.ValidateAll(Layer);
+            TypeGeneratorSettingsValidator.ValidateAll(Scene);
         }
 
         /// <summary>Loads <see cref="GUID" /> via <see cref="GUID" />.</summary>
@@ -92,23 +98,34 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
             private const string DefaultUnityAssemblyName = "Assembly-CSharp";
 
             /// <summary>Should this type be automatically generated.</summary>
-            [SerializeField] [Tooltip("Detect changes and automatically generate file.")]
+            [SerializeField]
+            [Tooltip("Detect changes and automatically generate file.")]
             internal bool AutoGenerate = true;
 
             /// <summary>The name of the type to generate.</summary>
-            [SerializeField] [Delayed] [Tooltip("Name of the type to generate.")]
+            [SerializeField]
+            [Delayed]
+            [Tooltip("Name of the type to generate.")]
             internal string TypeName;
 
             /// <summary>The path relative to the project's asset folder.</summary>
-            [SerializeField] [Delayed] [Tooltip("Location in project assets to store the generated file.")]
+            [SerializeField]
+            [Delayed]
+            [Tooltip("Location in project assets to store the generated file.")]
             internal string FilePath;
 
             /// <summary>Optional namespace to put the type in. Can be '<see langword="null" />' or empty..</summary>
-            [Header("Optional")] [Delayed] [CanBeNull] [SerializeField] [Tooltip("Optional: Namespace for the type to reside.")]
+            [Header("Optional")]
+            [Delayed]
+            [CanBeNull]
+            [SerializeField]
+            [Tooltip("Optional: Namespace for the type to reside.")]
             internal string Namespace;
 
             /// <summary>Backing field for <see cref="Assembly" />.</summary>
-            [CanBeNull] [SerializeField] [Tooltip("Optional: If using Assembly Definitions, when checking for updated tags, which Assembly Definition to search in.")]
+            [CanBeNull]
+            [SerializeField]
+            [Tooltip("Optional: If using Assembly Definitions, when checking for updated tags, which Assembly Definition to search in.")]
             internal AssemblyDefinitionAsset AssemblyDefinition;
 
             /// <summary>Used via reflection to look for the generated type.</summary>

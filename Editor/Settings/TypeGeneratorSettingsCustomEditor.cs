@@ -15,11 +15,17 @@ namespace AlkimeeGames.TagLayerTypeGenerator.Editor.Settings
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Actions", EditorStyles.boldLabel);
+
             EditorGUI.BeginDisabledGroup(!TagTypeGenerator.Generator.CanGenerate());
             if (GUILayout.Button("Regenerate Tag Type File")) TagTypeGenerator.Generator.GenerateFile();
             EditorGUI.EndDisabledGroup();
+
             EditorGUI.BeginDisabledGroup(!LayerTypeGenerator.Generator.CanGenerate());
             if (GUILayout.Button("Regenerate Layer Type File")) LayerTypeGenerator.Generator.GenerateFile();
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(!SceneTypeGenerator.Generator.CanGenerate());
+            if (GUILayout.Button("Regenerate Scene Type File")) SceneTypeGenerator.Generator.GenerateFile();
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.LabelField("Open", EditorStyles.boldLabel);
