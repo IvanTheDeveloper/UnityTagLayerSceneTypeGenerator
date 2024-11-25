@@ -1,4 +1,4 @@
-# Tag / Layer Type Generator
+# Tag / Layer / Scene Type Generator
 
 [![OpenUPM](https://img.shields.io/npm/v/com.alkimeegames.taglayertypegenerator?label=OpenUPM&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.alkimeegames.taglayertypegenerator/)
 [![Asset Store](https://img.shields.io/badge/Asset%20Store-download-green)](http://u3d.as/2sKh)
@@ -10,36 +10,32 @@
 [![GitHub Org's Stars](https://img.shields.io/github/stars/alkimeegames?style=social)](https://github.com/AlkimeeGames)
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FAlkimeeGames%2FTagLayerTypeGenerator)](https://twitter.com/intent/tweet?text=Look%20what%20I%20found!%20@AlkimeeDotNet%0A&url=https%3A%2F%2Fgithub.com%2FAlkimeeGames%2FTagLayerTypeGenerator)
 
-> Generates types for Tags and Layers in Unity projects - **automatically**, with no manual button pushes required. **Simply set and forget!**
+> Generates types for Tags, Layers and Scenes in Unity projects - **automatically**, with no manual button pushes required. **Simply set and forget!**
 
-## What is the Tag / Layer Type Generator?
+## What is the Tag / Layer / Scene Type Generator?
 
-The Tag / Layer Type Generator automatically generates types for the [Tags and Layers](https://docs.unity3d.com/Manual/class-TagManager.html) defined in your Unity project. A
-developer can then use these types to ensure that at compile-time, any tags or layers used during runtime will be correct. Using tags and layers in this way ensures that should a
-tag or layer change, the .NET compiler will flag this as a compilation error long before bugs appear at runtime, which is often a symptom of using
+The Tag / Layer / Scene Type Generator automatically generates types for the [Tags and Layers](https://docs.unity3d.com/Manual/class-TagManager.html) defined in your Unity project, and Scenes added to the build settings. A
+developer can then use these types to ensure that at compile-time, any tags or layers used during runtime will be correct. Using tags and layers in this way ensures that should a tag or layer change, the .NET compiler will flag this as a compilation error long before bugs appear at runtime, which is often a symptom of using
 so-called '[magic strings](https://en.wikipedia.org/wiki/Magic_string)'.
 
-## Why use typed Tags and Layers?
+## Why use typed Tags, Layers and Scenes?
 
-Using typed tags and layers in your project's code provides compile-time checking of the tag and layer values. Using the included Tag or Layer attributes on a string or int property
+Using typed tags / layers / scenes in your project's code provides compile-time checking of their values. Using their included attributes on a string or int property
 respectively also allows you to adjust these values in the inspector. See examples below.
 
 ## Whats wrong with [UnityEngine.LayerMask](https://docs.unity3d.com/ScriptReference/LayerMask.html)?
 
 Nothing! The generated types are designed to augment the usage of Unity's LayerMask struct. The LayerMask struct provides methods for converting a layer from a string into its
-corresponding ID (int) and vice versa. However, both approaches require you to use '[magic strings](https://en.wikipedia.org/wiki/Magic_string)' in your code. Using typed values for
-both the layer id and the mask allows you to catch errors at compile time. The layer type also contains pre-computer masks for each layer, making it simple to create layer masks from
-the types.
+corresponding ID (int) and vice versa. However, both approaches require you to use '[magic strings](https://en.wikipedia.org/wiki/Magic_string)' in your code. Using typed values for both the layer id and the mask allows you to catch errors at compile time. The layer type also contains pre-computer masks for each layer, making it simple to create layer masks from the types, and the scene type also contains buildIndexes for each scene.
 
 ## Setup
 
-The Tag / Layer Type Generator works out of the box, automatically and in the background with no dependencies other than Unity itself. It's pure CSharp and the public API has
-complete XML documentation including the generated CSharp types!
+The Tag / Layer / Scene Type Generator works out of the box, automatically and in the background with no dependencies other than Unity itself. It's pure CSharp and the public API has complete XML documentation including the generated CSharp types!
 
 ## How does this work?
 
-The Tag / Layer Type Generator subscribes to the Unity Editor's [ProjectChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-projectChanged.html) event. When this
-event is raised, the generators check to see if any new tags or layers have been added or previous tags or layers have been updated. A new CSharp file is generated in either case.
+The Tag / Layer / Scene Type Generator subscribes to the Unity Editor's [ProjectChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-projectChanged.html) event. When this
+event is raised, the generators check to see if any new tags, layers or scenes have been added or previous ones have been updated. A new CSharp file is generated in either case.
 It's also possible to manually generate the files either via a button in the Project Settings windows or inspecting the TypeGeneratorSttings asset.
 
 ## Example usage of the generated types
@@ -96,15 +92,42 @@ public class ExampleClass : MonoBehaviour
 }
 ```
 
+### Scenes
+
+```c#
+public class ExampleClass : MonoBehaviour
+{
+    private void ChangeScene()
+    {
+        // Use the Scene name to load a specific scene.
+        SceneManager.LoadScene(Scene.SampleScene);
+    }
+}
+```
+
+### Scene Build Index
+
+```c#
+public class ExampleClass : MonoBehaviour
+{
+    private void PreviousScene()
+    {
+        // Use the Scene build index to allow scene loading using integers.
+        SceneManager.LoadScene(Scene.BuildIndex.SampleScene - 1);
+    }
+}
+```
+
 ## Attributes
 
-If you want to use Tags or Layers as properties in a MonoBehaviour or ScriptableObject you can use the attributes provided. This will display a Tag or Layer field in the inspector.
+If you want to use Tags / Layers / Scenes as properties in a MonoBehaviour or ScriptableObject you can use the attributes provided. This will display a field in the inspector.
 
 ```c#
 public class ExampleClass : MonoBehaviour
 {
     [Tag] public string tag;
     [Layer] public int layer;
+    [Scene] public string scene;
 
     // Unity already provides an inspecor for the UnityEngine.LayerMask struct.
     public LayerMask layerMask;
@@ -114,6 +137,7 @@ public class ExampleClass : MonoBehaviour
         // You can safely use the tag in CampareTag checks.
         if (other.gameObject.CompareTag(tag)) {
             Destroy(other.gameObject);
+            SceneManager.LoadScene(Scene.SampleScene);
         }
 
         // ... or the layer ID
@@ -127,9 +151,9 @@ public class ExampleClass : MonoBehaviour
 A single configuration file is automatically created and placed into the Asset folder if one is not already available. This configuration file allows you to change the following
 parameters of both the Tag and Layer Types:
 
-- Auto Generate (e.g.: Should the Tag or Layer file be automatically generated on changes to the project)
-- Type Name (e.g.: Tag, Layer)
-- File Path (e.g.: Scripts/Tag.cs, Scripts/Layer.cs)
+- Auto Generate (e.g.: Should the Tag / Layer / Scene file be automatically generated on changes to the project)
+- Type Name (e.g.: Tag, Layer, Scene)
+- File Path (e.g.: Scripts/Tag.cs, Scripts/Layer.cs, Scripts/Scene.cs)
 - Optional: Namespace (e.g.: MyCustomNamespace)
 - Optional: AssemblyDefinition (e.g.: MyCustomNamespace.MyCustomAssembly)
 
@@ -227,7 +251,6 @@ namespace AlkimeeGames.Alkimee
 ```c#
 namespace AlkimeeGames.Alkimee
 {
-
     /// <summary>
     /// Use this type in place of layer names in code / scripts.
     /// </summary>
@@ -270,5 +293,47 @@ namespace AlkimeeGames.Alkimee
         }
     }
 }
+```
 
+## Scenes 
+
+```cs
+namespace AlkimeeGames.Alkimee
+{
+    /// <summary>
+    /// Use this type in place of scene names in code / scripts.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// SceneManager.LoadScene(Scene.SampleScene); 
+    /// </code>
+    /// </example>
+    public sealed class Scene
+    {
+        public const string StartMenu = "Start Menu";
+        public const string MainMenu = "Main Menu";
+        public const string Level1 = "Level 1";
+        public const string Level2 = "Level 2";
+        public const string Level3 = "Level 3";
+        public const string Credits = "Credits";
+
+        /// <summary>
+        /// Use this type in place of scene names in code / scripts.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// SceneManager.LoadScene(Scene.BuildIndex.SampleScene + 1); 
+        /// </code>
+        /// </example>
+        public sealed class BuildIndex
+        {
+            public const int StartMenu = 0;
+            public const int MainMenu = 1;
+            public const int Level1 = 2;
+            public const int Level2 = 3;
+            public const int Level3 = 4;
+            public const int Credits = 5;
+        }
+    }
+}
 ```
