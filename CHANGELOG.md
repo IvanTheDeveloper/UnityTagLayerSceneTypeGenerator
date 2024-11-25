@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [4.0.0] - 2024-11-25
 
-- Added the functionality to generate scenes as well.
+- Added the functionality to generate scene types as well.
 
 ## [3.0.1] - 2021-04-05
 
